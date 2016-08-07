@@ -15,7 +15,16 @@ public abstract class Weapon {
 			throw new WeaponException("Invalid price given!");
 		}
 	}
+
 	
+	public static boolean allWeaponsSold(Weapon [] weapons) {
+		for (int index = 0; index < weapons.length; index++) {
+			if (!weapons[index].isSold()) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public int getPrice() {
 		return price;

@@ -36,12 +36,13 @@ public class PoliceOfficer extends Police {
 	}
 
 	private static void catchAndArrest(Immigrant immigrant) throws PoliceException {
-		
+		if(immigrant != null){
 			if (hasBomb(immigrant)) {
 				throw new PoliceException("Cannot arrest this immigrant!");
 			} else {
 				Arrestable.arrest();
 			}
+		}
 			
 	}
 

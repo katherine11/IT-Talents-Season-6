@@ -1,7 +1,9 @@
 package immigrants.interfaces;
 
+import immigrants.other.City;
+
 public interface Sortable {
 
-	void sort();
+	City[] sort();
 	
 }

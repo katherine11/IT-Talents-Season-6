@@ -5,7 +5,11 @@ public abstract class CommonData {
 	private String name;
 
 	public CommonData(String name) {
-		this.setName(name);
+//		this.setName(name);
+		
+		if (name != null && name != "") {
+			this.name = name;
+		}
 
 	}
 
@@ -13,10 +17,11 @@ public abstract class CommonData {
 		return name;
 	}
 
-	public void setName(String name) {
-		if (name != null && name != "") {
-			this.name = name;
-		}
-	}
+	//need setter ? 
+//	public void setName(String name) {
+//		if (name != null && name != "") {
+//			this.name = name;
+//		}
+//	}
 
 }

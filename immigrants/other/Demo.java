@@ -1,17 +1,10 @@
 package immigrants.other;
 
-import java.util.Random;
+import java.util.Arrays;
 
-import immigrants.exceptions.AddressException;
-import immigrants.exceptions.CityException;
-import immigrants.exceptions.CountryException;
-import immigrants.exceptions.ImmigrantException;
-import immigrants.exceptions.ImmigrantWithWeaponsException;
-import immigrants.exceptions.OutOfMoneyException;
 import immigrants.exceptions.PassportException;
-import immigrants.exceptions.RadicalImmigrantException;
+import immigrants.exceptions.PoliceException;
 import immigrants.exceptions.WeaponException;
-import immigrants.interfaces.Sortable;
 import immigrants.people.Extremist;
 import immigrants.people.Immigrant;
 import immigrants.people.ImmigrantWithWeapons;
@@ -44,14 +37,28 @@ public class Demo {
 		Weapon[] unsold = new Weapon[WEAPONS_TO_BUY];
 
 		if (weapons != null) {
-			int[] randomIndexes = generateRandomIndexesWithoutRepeating(0, WEAPONS_TO_BUY - 1, WEAPONS_TO_BUY);
+			int[] randomIndexes = generateRandomIndexesWithoutRepeating(WEAPONS_TO_BUY);
 
 			for (int index = 0; index < unsold.length; index++) {
 
 				int randomIndexWeapon = randomIndexes[index];
-				if (!weapons[randomIndexWeapon].isSold()) {
-					unsold[index] = weapons[randomIndexes[index]];
-				}
+				boolean sold = weapons[randomIndexWeapon].isSold();
+
+				do {
+
+					if (Weapon.allWeaponsSold(weapons)) {
+						System.out.println("All weapons are sold!");
+						break;
+					}
+
+					if (sold) {
+						sold = weapons[++randomIndexWeapon].isSold();
+					} else {
+						unsold[index] = weapons[randomIndexWeapon];
+					}
+
+				} while (sold || ++randomIndexWeapon > weapons.length - 1);
+
 			}
 
 		} else {
@@ -61,10 +68,22 @@ public class Demo {
 
 	}
 
+	public static Police[] generatePolice(Police[] police, int size) {
+		Police[] randomP = new Police[size];
+		int[] randomInd = generateRandomIndexesWithoutRepeating(size);
+
+		for (int index = 0; index < randomP.length; index++) {
+			int randomIndexP = randomInd[index];
+			randomP[index] = police[randomIndexP];
+		}
+
+		return randomP;
+	}
+
 	public static Immigrant[] generateImmigrants(Immigrant[] immigrants, int size) {
 
 		Immigrant[] randomI = new Immigrant[size];
-		int[] randomInd = generateRandomIndexesWithoutRepeating(0, size - 1, size);
+		int[] randomInd = generateRandomIndexesWithoutRepeating(size);
 
 		for (int index = 0; index < randomI.length; index++) {
 			int randomIndexIm = randomInd[index];
@@ -77,7 +96,7 @@ public class Demo {
 	public static ImmigrantWithWeapons[] generateShooters(Immigrant[] immigrants, int size) {
 
 		ImmigrantWithWeapons[] randomI = new ImmigrantWithWeapons[size];
-		int[] randomInd = generateRandomIndexesWithoutRepeating(0, size, size);
+		int[] randomInd = generateRandomIndexesWithoutRepeating(size);
 
 		for (int index = 0; index < randomI.length; index++) {
 			int randomIndexIm = randomInd[index];
@@ -91,70 +110,130 @@ public class Demo {
 		return randomI;
 	}
 
-	public static int[] generateRandomIndexesWithoutRepeating(int start, int end, int count) {
-		int currentIndex = 0, remaining = end - start;
-		int[] randomIndexes = new int[count];
-		Random rng = new Random();
+	public static int[] generateRandomIndexesWithoutRepeating(int size) {
 
-		for (int index = 0; index < end && count > 0; index++) {
-			int probability = rng.nextInt();
-			if (remaining != 0 && probability < (int) (count / remaining)) {
-				count--;
-				randomIndexes[currentIndex++] = index;
-			}
-			remaining--;
+		int[] randomIndexes = new int[size];
+
+		for (int index = 0; index < size; index++) {
+			randomIndexes[index] = index;
 		}
+
+		int randomIndex = 0, randomValue = 0;
+
+		for (int index = 0; index < randomIndexes.length; index++) {
+			randomIndex = (int) (Math.random() * randomIndexes.length);
+
+			int temp = randomIndexes[index];
+			randomIndexes[index] = randomIndexes[randomIndex];
+			randomIndexes[randomIndex] = temp;
+
+		}
+
 		return randomIndexes;
+
 	}
 
 	public static int makeVicitims(int size) {
 		return (int) (Math.random() * size + 5);
 	}
-	
-	public Immigrant [] sort(Immigrant [] immigrants) {
 
-		Immigrant [] result = new Immigrant[immigrants.length];
+	public static Immigrant[] sort(Immigrant[] immigrants) {
+
+		Immigrant[] result = new Immigrant[immigrants.length];
 		for (int index = 0; index < immigrants.length; index++) {
 			for (int ind = 0; ind < immigrants.length - index - 1; ind++) {
-		
-				if(immigrants[index].getMoney() > immigrants[index+1].getMoney()){
-					Immigrant temp = immigrants[index];
-					immigrants[index] = immigrants[index+1];
-					immigrants[index+1] = temp;
-				}				
+
+				if (immigrants[ind].getMoney() > immigrants[ind + 1].getMoney()) {
+					Immigrant temp = immigrants[ind];
+					immigrants[ind] = immigrants[ind + 1];
+					immigrants[ind + 1] = temp;
+				}
 			}
 		}
-		
+
 		result = immigrants;
 		return result;
 	}
 
-	
+	public static Extremist[] sortExtr(Extremist[] immigrants) {
 
-	public static void main(String[] args) throws CountryException, CityException, AddressException,
-			OutOfMoneyException, ImmigrantException, PassportException, WeaponException {
+		Extremist[] result = new Extremist[immigrants.length / 2];
+		for (int index = 0; index < immigrants.length; index++) {
+			for (int ind = 0; ind < immigrants.length - index - 1; ind++) {
+
+				if (immigrants[index] instanceof Extremist) {
+
+					for (int in = 0; in < ((Extremist) immigrants[index]).getWeapons().length; in++) {
+						if (((Extremist) immigrants[index]).getWeapons()[in] instanceof Bomb) {
+
+							if (!((Bomb) ((Extremist) immigrants[index]).getWeapons()[in]).isExploded()) {
+								Extremist temp = (Extremist) immigrants[ind];
+								immigrants[ind] = immigrants[ind + 1];
+								immigrants[ind + 1] = temp;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		result = immigrants;
+		return result;
+	}
+
+	public static City[] sortCities(City[] cities) {
+
+		City[] result = new City[cities.length];
+		for (int index = 0; index < cities.length; index++) {
+			for (int ind = 0; ind < cities.length - index - 1; ind++) {
+
+				if (cities[index].getPopulation() > cities[index + 1].getPopulation()) {
+					City temp = cities[index];
+					cities[index] = cities[index + 1];
+					cities[index + 1] = temp;
+				}
+			}
+		}
+
+		result = cities;
+		return result;
+	}
+
+	public static String[] generateCityNames(String[] cityNames, int size) {
+
+		String[] randomC = new String[size];
+		int[] randomInd = generateRandomIndexesWithoutRepeating(size);
+
+		for (int index = 0; index < randomC.length; index++) {
+			int randomIndex = randomInd[index];
+			randomC[index] = cityNames[randomIndex];
+		}
+
+		return randomC;
+	}
+
+	public static void main(String[] args) throws Exception {
 
 		// 1)
 
-		final String[] cityNames = { "Sofia", "Burgas", "Plovdiv", "Varna", "Vraca", "Stara Zagora" };
+		final String[] cityNames = { "Sofia", "Burgas", "Plovdiv", "Varna", "Stara Zagora", "Carevo", "Nesebur",
+				"Veliko Turnovo" };
 		City[] cities = new City[CITIES];
 		for (int index = 0; index < cities.length; index++) {
 			cities[index] = new City(cityNames[(int) (Math.random() * cities.length)]);
 		}
 		Country bulgaria = new Country("Bulgaria", cities);
 
-		Police[] police = new Police[MAX_OFFICERS];
 		final String[] names = { "Martin", "Ivan", "Petko", "Milena", "Iliana", "Grigor", "Alek", "Nataly", "Vasilena",
 				"Svetoslav" };
 
 		final Address[] addresses = new Address[cities.length];
-		try {
-			for (int index = 0; index < addresses.length; index++) {
-				addresses[index] = new Address(bulgaria, cities[(int) (Math.random() * cities.length)]);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		for (int index = 0; index < addresses.length; index++) {
+			addresses[index] = new Address(bulgaria, cities[(int) (Math.random() * cities.length)]);
 		}
+
+		Police[] police = new Police[MAX_OFFICERS];
 		for (int index = 0; index < MAX_OFFICERS; index++) {
 
 			if (Math.random() > 0.5) {
@@ -167,22 +246,12 @@ public class Demo {
 
 		}
 
+		Police[] randomPolice = new Police[police.length / CITIES];
+
+		randomPolice = generatePolice(police, police.length);
 		for (int index = 0; index < cities.length; index++) {
-
-			Police[] randomPolice = new Police[police.length / CITIES];
-
-			for (int index2 = 0; index2 < randomPolice.length; index2++) {
-				if (Math.random() > 0.5) {
-					randomPolice[index2] = new PoliceOfficer(names[(int) (Math.random() * names.length)],
-							addresses[(int) (Math.random() * addresses.length)]);
-				} else {
-					randomPolice[index2] = new SpecialForces(names[(int) (Math.random() * names.length)],
-							addresses[(int) (Math.random() * addresses.length)]);
-				}
-
-			}
-
-			cities[index] = new City(cityNames[(int) (Math.random() * cityNames.length)],
+			cities[index] = new City(
+					generateCityNames(cityNames, cityNames.length)[(int) (Math.random() * cityNames.length)],
 					(long) (Math.random() * 100_000_000 + 1_000), randomPolice);
 		}
 
@@ -202,62 +271,36 @@ public class Demo {
 			Address randomAddress = new Address(bulgaria, cities[(int) (Math.random() * cities.length)]);
 			Passport randomPass = new Passport(names[(int) (Math.random() * names.length)]);
 
-			try {
-				if (chance <= CHANCE_FOR_RADICAL) {
+			if (chance <= CHANCE_FOR_RADICAL) {
 
-					immigrants[index] = new Radical((int) (Math.random() * 1_000 + 20), randomAddress, randomPass);
+				immigrants[index] = new Radical((int) (Math.random() * 1_000 + 200), randomAddress);
+
+				try {
+					immigrants[index].setPassport(randomPass);
 					// 35 % chance to have passport
+				} catch (PassportException e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 
 			if (chance > CHANCE_FOR_RADICAL && chance <= CHANCE_FOR_EXTREMIST) {
-				immigrants[index] = new Extremist((int) (Math.random() * 1_000 + 20), randomAddress);
+				immigrants[index] = new Extremist((int) (Math.random() * 1_000 + 200), randomAddress);
 
 			}
 
 			if (chance > CHANCE_FOR_NORMAL) {
-				immigrants[index] = new Normal((int) (Math.random() * 1_000 + 20), randomAddress, randomPass);
-			}
-
-		}
-
-		Immigrant[] randomRelatives = new Immigrant[REALTIVES];
-
-		for (int index = 0; index < randomRelatives.length; index++) {
-			
-			byte chance = (byte) (Math.random() * 100);
-
-			Address randomAddress = new Address(bulgaria, cities[(int) (Math.random() * cities.length)]);
-			Passport randomPass = new Passport(names[(int) (Math.random() * names.length)]);
-
-			try {
-				if (chance <= CHANCE_FOR_RADICAL) {
-
-					randomRelatives[index] = new Radical((int) (Math.random() * 1_000 + 20), randomAddress, randomPass);
-					// 35 % chance to have passport
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			if (chance > CHANCE_FOR_RADICAL && chance <= CHANCE_FOR_EXTREMIST) {
-				randomRelatives[index] = new Extremist((int) (Math.random() * 1_000 + 20), randomAddress);
-
-			}
-
-			if (chance > CHANCE_FOR_NORMAL) {
-				randomRelatives[index] = new Normal((int) (Math.random() * 1_000 + 20), randomAddress, randomPass);
+				immigrants[index] = new Normal((int) (Math.random() * 1_000 + 200), randomAddress, randomPass);
 			}
 		}
 
-		for (int index = 0; index < randomRelatives.length; index++) {
-			if (randomRelatives[index] != null && !(randomRelatives[index] instanceof Extremist)) {
-				if (randomRelatives[index] instanceof Radical && randomRelatives[index].isHasPassport()) {
-					randomRelatives[index].setRelatives(randomRelatives);
-				}
+		for (int index = 0; index < immigrants.length; index++) {
+			Immigrant[] randomRelatives = new Immigrant[REALTIVES];
+
+			for (int index2 = 0; index2 < randomRelatives.length; index2++) {
+				randomRelatives[index2] = immigrants[(int) (Math.random() * immigrants.length)];
 			}
+
+			immigrants[index].addRelatives(randomRelatives);
 		}
 
 		// 3)
@@ -271,33 +314,27 @@ public class Demo {
 			switch (chance) {
 
 			case 0:
-				weapons[index] = new Gun((int) (Math.random() * 100 + 10));
+				weapons[index] = new Gun((int) (Math.random() * 50 + 10));
 				break;
 			case 1:
-				weapons[index] = new Bomb((int) (Math.random() * 100 + 10));
+				weapons[index] = new Bomb((int) (Math.random() * 50 + 10));
 				break;
 			case 2:
-				weapons[index] = new Automat((int) (Math.random() * 100 + 10));
+				weapons[index] = new Automat((int) (Math.random() * 50 + 10));
 				break;
 
 			}
 
 		}
 
+		Weapon[] weapons2 = generateWeapons(weapons).clone();
+
 		for (int index = 0; index < immigrants.length; index++) {
 
-			Weapon[] weapons2 = generateWeapons(weapons).clone();
-
 			if (immigrants[index] instanceof ImmigrantWithWeapons) {
-				try {
-					((ImmigrantWithWeapons) immigrants[index]).buyWeapons(weapons2);
-				} catch (RadicalImmigrantException e) {
-					e.printStackTrace();
-				}
-			}
+				((ImmigrantWithWeapons) immigrants[index]).buyWeapons(weapons2);
 
-			for (int index2 = 0; index2 < weapons2.length; index2++) {
-				if (weapons2[index2] != null) {
+				for (int index2 = 0; index2 < weapons2.length; index2++) {
 					weapons2[index2].setSold(true);
 				}
 			}
@@ -305,67 +342,100 @@ public class Demo {
 
 		// 4)
 
-		try {
-			Immigrant[] migrators = generateImmigrants(immigrants, (int) (Math.random() * 100 + 10));
-			for (int index = 0; index < migrators.length; index++) {
-				Immigrant currentMigrator = migrators[index];
-				City randomCity = cities[(int) (Math.random() * cities.length)];
-				currentMigrator.migrate(randomCity);
-				Police randomPolice = police[(int) (Math.random() * police.length)];
-
-				if (randomPolice.managedToCheck(currentMigrator)) {
+		Immigrant[] migrators = generateImmigrants(immigrants, (int) (Math.random() * 90 + 10));
+		for (int index = 0; index < migrators.length; index++) {
+			Immigrant currentMigrator = migrators[index];
+			City randomCity = cities[(int) (Math.random() * cities.length)];
+			currentMigrator.migrate(randomCity);
+			Police randomPoliceOfficer = police[(int) (Math.random() * police.length)];
+			try {
+				if (randomPoliceOfficer.managedToCheck(currentMigrator)) {
 					randomCity.addImmigrant(currentMigrator);
 					currentMigrator.getCurrentAddress().setCity(randomCity);
 				}
+			} catch (PoliceException e) {
+				e.printStackTrace();
 			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 
 		// 5)
 
 		for (Immigrant immigrant : immigrants) {
-			if (immigrant != null) {
-				immigrant.showInfo();
-			}
+			immigrant.showInfo();
 		}
 
 		// 6)
 
-		try {
-			ImmigrantWithWeapons[] shooters = generateShooters(immigrants, SHOOTERS);
+		ImmigrantWithWeapons[] immigrantsWithWeapons = new ImmigrantWithWeapons[immigrants.length];
+		int size = 0;
 
-			for (ImmigrantWithWeapons shooter : shooters) {
-				if (shooter != null) {
-					shooter.buyWeapons(generateWeapons(weapons));
-				}
+		for (int index = 0; index < immigrants.length; index++) {
+			if (immigrants[index] instanceof ImmigrantWithWeapons) {
+				immigrantsWithWeapons[size++] = (ImmigrantWithWeapons) immigrants[index];
 			}
-
-			for (int index = 0; index < shooters.length; index++) {
-
-				City randomCity = cities[(int) (Math.random() * cities.length)];
-				Weapon randomWeapon = weapons[(int) (Math.random() * weapons.length)];
-
-				if (shooters[index] != null && randomCity != null) {
-					if (shooters[index] instanceof Extremist) {
-						((Extremist) shooters[index]).explode(randomCity);
-					}
-
-					if (shooters[index] instanceof Radical) {
-						randomCity.reducePopulation(
-								makeVicitims(((Radical) shooters[index]).shoot(randomCity, randomWeapon)));
-					}
-				}
-			}
-
-		} catch (ImmigrantWithWeaponsException e) {
-			e.printStackTrace();
 		}
+
+		ImmigrantWithWeapons[] shooters = generateShooters(immigrantsWithWeapons, SHOOTERS);
+
+		for (int index = 0; index < shooters.length; index++) {
+
+			City randomCity = cities[(int) (Math.random() * cities.length)];
+			Weapon randomWeapon = weapons[(int) (Math.random() * weapons.length)];
+
+			if (shooters[index] instanceof Extremist) {
+				for (int index2 = 0; index2 < shooters[index].getWeapons().length; index2++) {
+
+					if (shooters[index].getWeapons()[index2] instanceof Bomb) {
+						((Extremist) shooters[index]).explode(randomCity);
+						((Bomb) shooters[index].getWeapons()[index2]).setExploded(true);
+					}
+
+				}
+
+			}
+			if (shooters[index] instanceof Radical) {
+				randomCity.reducePopulation(makeVicitims(((Radical) shooters[index]).shoot(randomCity, randomWeapon)));
+			}
+		}
+
+		System.out.println("yeyeyeyeyeyeyye");
 
 		// 7)
 
-	}
+		City[] sortedCities = sortCities(cities);
 
+		for (City city : sortedCities) {
+			System.out.println(city.getPopulation());
+		}
+
+		Immigrant[] sortedImmigrants = sort(immigrants);
+
+		for (Immigrant immigrant : immigrants) {
+			System.out.println(immigrant.getMoney());
+		}
+
+		Extremist[] extremists = new Extremist[immigrants.length / 2];
+		int size2 = 0;
+
+		for (int index = 0; index < immigrants.length; index++) {
+			if (immigrants[index] instanceof Extremist) {
+				extremists[size2++] = (Extremist) immigrants[index];
+			}
+		}
+
+		// cannot sort extremists!
+
+		// Extremist [] sortedExtremists = sortExtr(extremists);
+		//3
+		// for (int index = 0; index < extremists.length;index++) {
+		// for (int i = 0; i < extremists[index].getWeapons().length; i++) {
+		// if (extremists[index].getWeapons()[i] instanceof Bomb) {
+		// System.out.println(((Bomb)
+		// extremists[index].getWeapons()[i]).isExploded());
+		// }
+		// }
+		// }
+
+	}
 
 }

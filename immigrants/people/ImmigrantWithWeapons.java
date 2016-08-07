@@ -1,9 +1,7 @@
 package immigrants.people;
 
 import immigrants.exceptions.ImmigrantException;
-import immigrants.exceptions.ImmigrantWithWeaponsException;
 import immigrants.exceptions.OutOfMoneyException;
-import immigrants.exceptions.RadicalImmigrantException;
 import immigrants.interfaces.Buyable;
 import immigrants.other.Address;
 import immigrants.weapons.Weapon;
@@ -18,33 +16,38 @@ public abstract class ImmigrantWithWeapons extends Immigrant implements Buyable 
 
 	@Override
 	public void buyWeapons(Weapon[] weapons)
-			throws ImmigrantWithWeaponsException, RadicalImmigrantException, OutOfMoneyException {
+			throws OutOfMoneyException, ImmigrantException {
 
 		if (weapons != null) {
 			int totalPrice = 0;
 
 			for (int index = 0; index < weapons.length; index++) {
-				if (weapons[index] != null) {
-					totalPrice += weapons[index].getPrice();
-				}
+				totalPrice += weapons[index].getPrice();
+				
 			}
 
 			if (totalPrice < getMoney()) {
-				this.setWeapons(weapons.clone());
+				this.weapons = weapons.clone();
 			}
+			else{
+				throw new OutOfMoneyException("Not enough money to buy all these weapons");
+			}
+		}
+		else {
+			throw new ImmigrantException("Invalid weapons given!");
 		}
 
 	}
 
 	public Weapon[] getWeapons() {
-		return weapons;
+		return this.weapons;
 	}
 
-	public abstract void setWeapons(Weapon[] weapons) throws ImmigrantWithWeaponsException, RadicalImmigrantException;
+//	public abstract void setWeapons(Weapon[] weapons) throws ImmigrantException;
 
-//	public void setPassport(Passport passport) {
-//		
-//		super.setPassport(passport);
-//	}
+	// public void setPassport(Passport passport) {
+	//
+	// super.setPassport(passport);
+	// }
 
 }

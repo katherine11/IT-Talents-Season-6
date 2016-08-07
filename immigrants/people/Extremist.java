@@ -7,7 +7,6 @@ import immigrants.interfaces.Explodeable;
 import immigrants.other.Address;
 import immigrants.other.City;
 import immigrants.weapons.Bomb;
-import immigrants.weapons.Weapon;
 
 public class Extremist extends ImmigrantWithWeapons implements Explodeable {
 
@@ -32,13 +31,16 @@ public class Extremist extends ImmigrantWithWeapons implements Explodeable {
 		}
 	}
 
-	@Override
-	public void setWeapons(Weapon[] weapons) {
-
-		if (weapons != null) {
-			this.weapons = weapons.clone();
-		}
-
-	}
+//	@Override
+//	public void setWeapons(Weapon[] weapons) throws ExtremistImmigrantException {
+//
+//		if (weapons != null) {
+//			this.weapons = weapons.clone();
+//		}
+//		else{
+//			throw new ExtremistImmigrantException("Invalid weapons!");
+//		}
+//
+//	}
 
 }

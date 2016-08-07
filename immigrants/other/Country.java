@@ -61,7 +61,7 @@ public class Country extends CommonData implements Removable, Sortable{
 	
 
 	@Override
-	public void sort() {
+	public City [] sort() {
 		
 		for (int index = 0; index < this.cities.length; index++) {
 			for (int ind = 0; ind < this.cities.length - index - 1; ind++) {
@@ -73,7 +73,11 @@ public class Country extends CommonData implements Removable, Sortable{
 				}
 				
 			}
-		}		
+		}
+		
+		City [] result = new City[cities.length];
+		result = cities.clone();
+		return result;
 	}
 	
 	

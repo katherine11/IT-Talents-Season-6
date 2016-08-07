@@ -1,5 +1,7 @@
 package immigrants.people;
 
+import java.security.cert.CertificateNotYetValidException;
+
 import immigrants.exceptions.ImmigrantException;
 import immigrants.exceptions.OutOfMoneyException;
 import immigrants.exceptions.PassportException;
@@ -17,12 +19,6 @@ public abstract class Immigrant extends Citizen implements Migrateable {
 	public Immigrant(int money, Address address) throws OutOfMoneyException, ImmigrantException {
 		this.setMoney(money);
 
-		// if (relatives != null) {
-		// this.relatives = relatives.clone();
-		// } else {
-		// throw new ImmigrantException("No relatives to add!");
-		// }
-
 		if (address != null) {
 			this.currentAddress = address;
 		} else {
@@ -35,10 +31,28 @@ public abstract class Immigrant extends Citizen implements Migrateable {
 		setPassport(passport);
 	}
 
+	public void addRelatives(Immigrant[] relatives) throws ImmigrantException {
+		if (relatives != null) {
+			this.relatives = relatives.clone();
+		} else {
+			throw new ImmigrantException("No relatives to add!");
+		}
+	}
+
 	@Override
 	public void migrate(City city) {
-		// TODO Auto-generated method stub
-
+		
+		//don't know how to solve infinite recursion;
+		
+		if (city != null) {
+			this.currentAddress = null;
+			
+			for (int index = 0; index < this.relatives.length; index++) {
+				this.relatives[index].migrate(city);
+			}
+			
+			return;
+		}
 	}
 
 	@Override
@@ -59,12 +73,6 @@ public abstract class Immigrant extends Citizen implements Migrateable {
 		return relatives;
 	}
 
-	public void setRelatives(Immigrant[] relatives) {
-		if (relatives != null) {
-			this.relatives = relatives;
-		}
-	}
-
 	public Address getCurrentAddress() {
 		return currentAddress;
 	}
@@ -80,14 +88,11 @@ public abstract class Immigrant extends Citizen implements Migrateable {
 		System.out.println("Money: " + this.getMoney());
 		System.out.println("Relatives: ");
 
-		if (this.relatives != null) {
-			for (int index = 0; index < this.relatives.length; index++) {
-				if (relatives[index] != null) {
-					System.out.println(relatives[index]);
-				}
+		for (int index = 0; index < this.relatives.length; index++) {
+			if (relatives[index] != null) {
+				System.out.println(relatives[index]);
 			}
 		}
-
 	}
 
 	@Override
@@ -95,7 +100,7 @@ public abstract class Immigrant extends Citizen implements Migrateable {
 		if (getPassport() != null) {
 			return getPassport().getName();
 		}
-		return "";
+		return "Unknown";
 	}
 
 }

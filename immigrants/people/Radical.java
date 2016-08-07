@@ -20,16 +20,8 @@ public class Radical extends ImmigrantWithWeapons implements Shootable{
 	private static final float CHANCE_TO_HAVE_PASSPORT = 35f;
 	private static final byte CHANCE_FOR_PASSPORT = 35;
 
-	public Radical(int money, Address address, Passport passport) throws OutOfMoneyException, ImmigrantException, PassportException {
+	public Radical(int money, Address address) throws OutOfMoneyException, ImmigrantException, PassportException {
 		super(money, address);
-
-		if(Math.random()*100 > CHANCE_TO_HAVE_PASSPORT){
-			this.setHasPassport(false);
-		}
-		else{
-			this.setHasPassport(true);
-			this.setPassport(passport);
-		}
 		
 		Weapon [] weapons = new Weapon[MAX_WEAPONS_FOR_RADICAL];	
 		this.setWeapons(weapons);
@@ -39,12 +31,21 @@ public class Radical extends ImmigrantWithWeapons implements Shootable{
 
 	@Override
 	public void setPassport(Passport passport) throws PassportException {
-		byte chance = (byte) (Math.random() * 100);
+				
+		if (passport != null) {
+			byte chance = (byte) (Math.random() * 100);
 
-		if (passport != null && chance <= CHANCE_FOR_PASSPORT) {
-			super.setPassport(passport);
+			if(chance <= CHANCE_FOR_PASSPORT) {
+				setHasPassport(true);
+				super.setPassport(passport);
+			}
+			else {
+				setHasPassport(false);
+				throw new PassportException("No passport given! ");
+			}
+			
 		} else {
-			throw new PassportException("No passport given! ");
+			throw new PassportException("Invalid passport! ");
 		}
 
 	}
@@ -59,7 +60,6 @@ public class Radical extends ImmigrantWithWeapons implements Shootable{
 			}
 			
 			this.weapons = weapons.clone();
-
 		}
 		else{
 			throw new RadicalImmigrantException("Invalid weapons!");

@@ -3,10 +3,19 @@ import immigrants.exceptions.WeaponException;
 import immigrants.interfaces.Explodeable;
 
 public class Bomb extends Weapon implements Explodeable{
+	
+	private boolean isExploded;
 
 	public Bomb(int price) throws WeaponException {
 		super(price);
-		// TODO Auto-generated constructor stub
+	}
+
+	public boolean isExploded() {
+		return isExploded;
+	}
+
+	public void setExploded(boolean isExploded) {
+		this.isExploded = isExploded;
 	}
 
 	
