@@ -1,7 +1,6 @@
 package immigrants.people;
 
-import java.security.cert.CertificateNotYetValidException;
-
+import immigrants.exceptions.AddressException;
 import immigrants.exceptions.ImmigrantException;
 import immigrants.exceptions.OutOfMoneyException;
 import immigrants.exceptions.PassportException;
@@ -40,18 +39,16 @@ public abstract class Immigrant extends Citizen implements Migrateable {
 	}
 
 	@Override
-	public void migrate(City city) {
-		
-		//don't know how to solve infinite recursion;
-		
+	public void migrate(City city, int index) {
+
 		if (city != null) {
-			this.currentAddress = null;
-			
-			for (int index = 0; index < this.relatives.length; index++) {
-				this.relatives[index].migrate(city);
+
+			for (Immigrant relative : relatives) {
+				if (index < 0) {
+					return;
+				}
+				relative.migrate(city, --index);
 			}
-			
-			return;
 		}
 	}
 
@@ -77,8 +74,13 @@ public abstract class Immigrant extends Citizen implements Migrateable {
 		return currentAddress;
 	}
 
-	public void setCurrentAddress(Address currentAddress) {
-		this.currentAddress = currentAddress;
+	public void setCurrentAddress(Address currentAddress) throws AddressException {
+		if(currentAddress != null){
+			this.currentAddress = currentAddress;
+		}
+		else{
+			throw new AddressException("Invalid address given!");
+		}
 	}
 
 	public void showInfo() {

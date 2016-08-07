@@ -3,7 +3,7 @@ import immigrants.other.City;
 
 public interface Migrateable {
 
-	void migrate(City city);
+	void migrate(City city, int index);
 	
 }
 

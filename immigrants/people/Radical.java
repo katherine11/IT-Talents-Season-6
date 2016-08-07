@@ -17,16 +17,13 @@ import immigrants.weapons.Weapon;
 public class Radical extends ImmigrantWithWeapons implements Shootable{
 
 	private static final byte MAX_WEAPONS_FOR_RADICAL = 5;
-	private static final float CHANCE_TO_HAVE_PASSPORT = 35f;
-	private static final byte CHANCE_FOR_PASSPORT = 35;
+	private static final float CHANCE_FOR_PASSPORT = 35f;
 
 	public Radical(int money, Address address) throws OutOfMoneyException, ImmigrantException, PassportException {
 		super(money, address);
 		
 		Weapon [] weapons = new Weapon[MAX_WEAPONS_FOR_RADICAL];	
-		this.setWeapons(weapons);
-	
-	
+		this.setWeapons(weapons);	
 	}
 
 	@Override

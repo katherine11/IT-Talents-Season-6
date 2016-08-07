@@ -7,7 +7,6 @@ public class Gun extends Weapon implements Shootable{
 	
 	public Gun(int price) throws WeaponException {
 		super(price);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

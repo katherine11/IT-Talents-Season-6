@@ -1,16 +1,17 @@
 package immigrants.other;
 
+import javax.naming.InvalidNameException;
+
 import immigrants.exceptions.CityException;
 import immigrants.exceptions.CountryException;
 import immigrants.interfaces.Removable;
-import immigrants.interfaces.Sortable;
 import immigrants.people.Immigrant;
 
-public class Country extends CommonData implements Removable, Sortable{
+public class Country extends CommonData implements Removable{
 
 	private City[] cities;
 
-	public Country(String name, City[] cities) throws CountryException {
+	public Country(String name, City[] cities) throws CountryException, InvalidNameException {
 		super(name);
 		
 		if(cities != null){
@@ -45,8 +46,13 @@ public class Country extends CommonData implements Removable, Sortable{
 		return cities;
 	}
 
-	public void setCities(City[] cities) {
-		this.cities = cities;
+	public void setCities(City[] cities) throws CityException {
+		if(cities != null){
+			this.cities = cities;
+		}
+		else{
+			throw new CityException("Invalid array of cities given!");
+		}
 	}
 
 	@Override
@@ -58,28 +64,5 @@ public class Country extends CommonData implements Removable, Sortable{
 			}
 		}	
 	}
-	
-
-	@Override
-	public City [] sort() {
-		
-		for (int index = 0; index < this.cities.length; index++) {
-			for (int ind = 0; ind < this.cities.length - index - 1; ind++) {
-		
-				if(this.cities[index].getPopulation() > this.cities[index+1].getPopulation()){
-					City temp = this.cities[index];
-					this.cities[index] = this.cities[index+1];
-					this.cities[index+1] = temp;
-				}
-				
-			}
-		}
-		
-		City [] result = new City[cities.length];
-		result = cities.clone();
-		return result;
-	}
-	
-	
 
 }

@@ -1,8 +1,9 @@
 package immigrants.other;
 
+import javax.naming.InvalidNameException;
+
 import immigrants.exceptions.CityException;
 import immigrants.interfaces.Addable;
-import immigrants.interfaces.Sortable;
 import immigrants.people.Citizen;
 import immigrants.people.Immigrant;
 import immigrants.people.Police;
@@ -10,11 +11,12 @@ import immigrants.people.Police;
 public class City extends CommonData implements Addable {
 
 	private static final long MAX_POPULATION = 100_000;
+	@SuppressWarnings("unused")
 	private Police[] police;
 	private long population;
 	private Citizen[] citizens = new Citizen [(int) MAX_POPULATION];// there are citizens and immigrants;
 
-	public City(String name, long population, Police[] police) throws CityException {
+	public City(String name, long population, Police[] police) throws CityException, InvalidNameException {
 		super(name);
 		
 		if(population > 0){
@@ -34,7 +36,7 @@ public class City extends CommonData implements Addable {
 	}
 	
 
-	public City(String name) {
+	public City(String name) throws InvalidNameException {
 		super(name);
 	}
 
@@ -90,8 +92,5 @@ public class City extends CommonData implements Addable {
 	public long getPopulation() {
 		return population;
 	}
-
-
-	
 
 }

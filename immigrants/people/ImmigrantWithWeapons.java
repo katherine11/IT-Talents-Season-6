@@ -43,11 +43,4 @@ public abstract class ImmigrantWithWeapons extends Immigrant implements Buyable 
 		return this.weapons;
 	}
 
-//	public abstract void setWeapons(Weapon[] weapons) throws ImmigrantException;
-
-	// public void setPassport(Passport passport) {
-	//
-	// super.setPassport(passport);
-	// }
-
 }

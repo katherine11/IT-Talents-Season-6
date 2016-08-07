@@ -1,5 +1,7 @@
 package immigrants.people;
 
+import javax.naming.InvalidNameException;
+
 import immigrants.exceptions.PoliceException;
 import immigrants.interfaces.Arrestable;
 import immigrants.other.Address;
@@ -8,7 +10,7 @@ public class SpecialForces extends Police {
 
 	private static final byte CHANCE_TO_ARREST_ILLEGAL_IMMIGRANTS = 90;
 
-	public SpecialForces(String name, Address address) {
+	public SpecialForces(String name, Address address) throws InvalidNameException {
 		super(name, address);
 	}
 
@@ -45,8 +47,6 @@ public class SpecialForces extends Police {
 			throw new PoliceException("The police didn't manage to arrest the immigrant!");
 		}
 	}
-
-
 
 }
 

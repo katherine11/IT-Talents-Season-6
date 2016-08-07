@@ -1,4 +1,6 @@
 package immigrants.people;
+import javax.naming.InvalidNameException;
+
 import immigrants.exceptions.PoliceException;
 import immigrants.interfaces.Arrestable;
 import immigrants.interfaces.Checkable;
@@ -7,9 +9,10 @@ import immigrants.other.CommonData;
 
 public abstract class Police extends CommonData implements Checkable, Arrestable{
 	
+	@SuppressWarnings("unused")
 	private Address workAddress;
 	
-	public Police(String name, Address address) {
+	public Police(String name, Address address) throws InvalidNameException {
 		super(name);
 		
 		if(address != null){
