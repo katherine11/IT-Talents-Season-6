@@ -1,5 +1,6 @@
 package project;
 
+
 public interface IUser {
 
 	boolean checkEmail(String email);

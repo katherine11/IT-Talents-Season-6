@@ -1,5 +1,7 @@
 package project;
 
+import java.util.SortedSet;
+
 import exceptions.UserException;
 
 public class Administrator extends User {

@@ -10,8 +10,8 @@ public abstract class Advertisement {
 	private Vehicle vehicle;
 	private LocalDate dateOfPublishing;
 	protected int validity = MAX_VALIDITY_IN_MONTHS;
-	
-	
+
+
 	public Advertisement(Vehicle vehicle) throws AdvertisementException {
 		if(vehicle != null){
 			this.vehicle = vehicle;
@@ -39,6 +39,23 @@ public abstract class Advertisement {
 		}
 				
 	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((dateOfPublishing == null) ? 0 : dateOfPublishing.hashCode());
+		result = prime * result + validity;
+		result = prime * result + ((vehicle == null) ? 0 : vehicle.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Advertisement other = (Advertisement) obj;		
+		return this.vehicle.equals(other.vehicle) && this.dateOfPublishing == other.dateOfPublishing;
+		
+	}
 
 	boolean isExpired(){
 		
@@ -50,6 +67,13 @@ public abstract class Advertisement {
 		return false;
 		
 	}
+
+	public Vehicle getVehicle() {
+		return vehicle;
+	}
+	
+	
+	
 	
 	
 	

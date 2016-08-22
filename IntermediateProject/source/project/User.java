@@ -3,6 +3,7 @@ package project;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.SortedSet;
 
 import exceptions.UserException;
 
@@ -20,7 +21,7 @@ public abstract class User implements IUser {
 	private String telephone;
 	private String address;
 	private int age;
-	private Set<Advertisement> advertisements = new HashSet<Advertisement>();
+	protected Set<Advertisement> advertisements = new HashSet<Advertisement>();
 
 	User(String email, String password, String fullName, String telephone, String address, int age)
 			throws UserException {
@@ -60,7 +61,7 @@ public abstract class User implements IUser {
 			throw new UserException("Nevalidni godini!");
 		}
 	}
-
+	
 	@Override
 	public boolean checkTelephone(String telephone) {
 		if (telephone.length() == LENGTH_OF_TELEPHONE_NUMBER) {

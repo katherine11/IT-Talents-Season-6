@@ -86,7 +86,7 @@ public class Demo {
 			x = sc.nextInt();
 		}
 		while(!(x == 1 || x == 2));
-		
+
 		
 		System.out.println("Register: ");
 		System.out.println("Enter email address: ");
