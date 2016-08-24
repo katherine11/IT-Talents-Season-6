@@ -1,7 +1,5 @@
 package project;
 
-import java.util.SortedSet;
-
 import exceptions.UserException;
 
 public class Administrator extends User {
@@ -15,6 +13,9 @@ public class Administrator extends User {
 
 	@Override
 	public void deleteAdvertisement(Advertisement advertisement) {
+
+		
+		
 		
 	}
 	
