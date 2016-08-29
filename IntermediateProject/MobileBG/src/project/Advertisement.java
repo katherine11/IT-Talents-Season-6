@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import exceptions.AdvertisementException;
 
-public abstract class Advertisement {
+public class Advertisement {
 
 	private static final int MAX_VALIDITY_IN_MONTHS = 12;
 	private Vehicle vehicle;
@@ -13,6 +13,7 @@ public abstract class Advertisement {
 
 
 	public Advertisement(Vehicle vehicle) throws AdvertisementException {
+		
 		if(vehicle != null){
 			this.vehicle = vehicle;
 		}
@@ -39,7 +40,7 @@ public abstract class Advertisement {
 		}
 				
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -59,7 +60,7 @@ public abstract class Advertisement {
 
 	boolean isExpired(){
 		
-		if (dateOfPublishing.plusMonths(MAX_VALIDITY_IN_MONTHS) == LocalDate.now()) {
+		if (dateOfPublishing.plusMonths(MAX_VALIDITY_IN_MONTHS).compareTo(LocalDate.now()) > 0) {
 			System.out.println("The advertisement has been already expired! You must publish another one!");
 			return true;
 		}

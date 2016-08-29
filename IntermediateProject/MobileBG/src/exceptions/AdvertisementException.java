@@ -2,9 +2,6 @@ package exceptions;
 
 public class AdvertisementException extends Exception {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6936117265513812147L;
 
 	public AdvertisementException() {

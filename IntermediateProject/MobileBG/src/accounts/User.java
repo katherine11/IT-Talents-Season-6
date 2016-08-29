@@ -1,67 +1,92 @@
-package project;
+package accounts;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
-import java.util.SortedSet;
+import java.util.TreeSet;
 
 import exceptions.UserException;
+import project.Advertisement;
 
 public abstract class User implements IUser {
 
+	private static final int MIN_SYMBOLS_FOR_USERNAME = 5;
 	private static final int MIN_AGE_REQUIRED = 16;
-
 	private static final int LENGTH_OF_TELEPHONE_NUMBER = 10;
 	private static final int CONDITION_TO_BE_PASSWORD = 3;
 	private static final int MIN_PASSWORD_LENGTH = 6;
 
+	private String username;
 	private String email;
 	private String password;
 	private String fullName;
 	private String telephone;
 	private String address;
 	private int age;
-	protected Set<Advertisement> advertisements = new HashSet<Advertisement>();
+	protected Set<Advertisement> advertisements = new TreeSet<Advertisement>();
 
-	User(String email, String password, String fullName, String telephone, String address, int age)
+	User(String username, String email, String password, String fullName, String telephone, String address, int age)
 			throws UserException {
+
+		if (checkUsername(username)) {
+			this.username = username;
+		}
+		else{
+			throw new UserException("Invalid username!");
+		}
+
 		if (checkEmail(email)) {
 			this.email = email;
 		} else {
-			throw new UserException("Nevaliden email!");
+			throw new UserException("Invalid email!");
 		}
 
 		if (checkThePassword(password)) {
 			this.password = password;
 		} else {
-			throw new UserException("Nevalidna parola!");
+			throw new UserException("Invalid password!");
 		}
 
 		if (checkNameAndAddress(fullName)) {
 			this.fullName = fullName;
 		} else {
-			throw new UserException("Nevalidni tri imena!");
+			throw new UserException("Invalid names!");
 		}
 
 		if (checkTelephone(telephone)) {
 			this.telephone = telephone;
 		} else {
-			throw new UserException("Nevaliden telefonen nomer!");
+			throw new UserException("Invalid phone number!");
 		}
 
 		if (checkNameAndAddress(address)) {
 			this.address = address;
 		} else {
-			throw new UserException("Nevaliden adres!");
+			throw new UserException("Invalid address!");
 		}
 
 		if (age > MIN_AGE_REQUIRED) {
 			this.age = age;
 		} else {
-			throw new UserException("Nevalidni godini!");
+			throw new UserException("Invalid age!");
 		}
 	}
-	
+
+	@Override
+	public boolean login(String username, String password) {
+
+		if (checkEmail(username) && checkThePassword(password)) {
+
+			System.out.println("Login successful!!");
+			return true;
+		}
+		System.out.println("Login was not successful. Please try again later! ");
+		return false;
+
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
 	@Override
 	public boolean checkTelephone(String telephone) {
 		if (telephone.length() == LENGTH_OF_TELEPHONE_NUMBER) {
@@ -84,14 +109,52 @@ public abstract class User implements IUser {
 	}
 
 	@Override
+	public boolean checkUsername(String username) {
+		if (username != null && username.length() > MIN_SYMBOLS_FOR_USERNAME) {
+
+			if ((username.contains("_") || username.contains(".") || containsDigits(username))
+					&& containsLowercaseLettersOnly(username)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean containsLowercaseLettersOnly(String username) {
+		
+		for (int index = 0; index < username.length(); index++) {
+			
+			char currentSymbol = username.charAt(index);
+			
+			if(currentSymbol >= 'A' && currentSymbol <= 'Z'){
+				return false;
+			}
+			
+		}
+		return true;
+		
+	}
+
+	private boolean containsDigits(String username) {
+		
+		for (int index = 0; index < username.length(); index++) {
+			
+			char currentSymbol = username.charAt(index);
+			
+			if(currentSymbol  >= '0' && currentSymbol <= '9'){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public boolean checkEmail(String email) {
 		EmailValidator emailValidator = new EmailValidator();
 		if (emailValidator.validate(email)) {
 			return true;
-		} else {
-			System.out.println("Nevaliden email!");
-			return false;
 		}
+		return false;
 	}
 
 	@Override
@@ -124,30 +187,4 @@ public abstract class User implements IUser {
 		return false;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		if (email == null) {
-			if (other.email != null)
-				return false;
-		} else if (!email.equals(other.email))
-			return false;
-		return true;
-	}
-
-	
 }

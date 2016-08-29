@@ -1,15 +1,16 @@
 package project;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
-import enums.Brand;
 import enums.Color;
 import enums.EngineType;
 import enums.VehicleCategory;
 
 public class Vehicle {
-	
-	private Brand brand;
+
+	private String brand;
 	private String model;
 	private int price;
 	private Color color;
@@ -18,24 +19,28 @@ public class Vehicle {
 	private String city;
 	private int yearOfProducement;
 	private VehicleCategory category;
-	private Set<ExtraFeatures> extraFeautures;
-	
-	
-	public Brand getBrand() {
+	private Map<String, Set<String>> extraFeautures = new HashMap<String, Set<String>>();
+
+	public String getBrand() {
 		return brand;
 	}
+
 	public String getModel() {
 		return model;
 	}
+
 	public int getPrice() {
 		return price;
 	}
+
 	public String getRegion() {
 		return region;
 	}
+
 	public int getYearOfProducement() {
 		return yearOfProducement;
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -52,19 +57,18 @@ public class Vehicle {
 		result = prime * result + yearOfProducement;
 		return result;
 	}
-	
-	
+
 	@Override
 	public boolean equals(Object obj) {
-		
+
 		Vehicle other = (Vehicle) obj;
-		
-		return this.brand.equals(other.brand) && this.color.equals(other.color) && 
-				this.yearOfProducement == other.yearOfProducement && this.engineType == other.engineType;
+
+		return this.brand.equals(other.brand) && this.color.equals(other.color)
+				&& this.yearOfProducement == other.yearOfProducement && this.engineType.equals(other.engineType);
 	}
-	
-	
-	
-	
+
+	public void addExtraFeatures(Set<String> features) {
+		
+	}
 
 }
